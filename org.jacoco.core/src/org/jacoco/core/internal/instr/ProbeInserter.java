@@ -101,6 +101,18 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		mv.visitInsn(Opcodes.BASTORE);
 	}
 
+	/*
+		@Override
+		public void visitCode() {
+			mv.visitLabel(beginLabel);
+			accessorStackSize = arrayStrategy.storeInstance(mv, clinit, variable);
+
+			probeInserter.insertProbe(methodEntryProbeId);
+
+			mv.visitCode();
+		}
+	 */
+
 	@Override
 	public void visitCode() {
 		mv.visitLabel(beginLabel);

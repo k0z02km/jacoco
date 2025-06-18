@@ -34,6 +34,11 @@ import java.util.regex.Pattern;
  */
 public final class AgentOptions {
 
+	/** KZ ADDITION
+	 *  Specifies whether we want Jacoco to probe by method only or include line/branch
+	 */
+	public static final String METHODONLY = "methodonly";
+
 	/**
 	 * Specifies the output file for execution data. Default is
 	 * <code>jacoco.exec</code> in the working directory.
@@ -190,7 +195,7 @@ public final class AgentOptions {
 	public static final String JMX = "jmx";
 
 	private static final Collection<String> VALID_OPTIONS = Arrays.asList(
-			DESTFILE, APPEND, INCLUDES, EXCLUDES, EXCLCLASSLOADER,
+			METHODONLY, DESTFILE, APPEND, INCLUDES, EXCLUDES, EXCLCLASSLOADER,
 			INCLBOOTSTRAPCLASSES, INCLNOLOCATIONCLASSES, SESSIONID, DUMPONEXIT,
 			OUTPUT, ADDRESS, PORT, CLASSDUMPDIR, JMX);
 
@@ -257,6 +262,15 @@ public final class AgentOptions {
 		if (port < 0) {
 			throw new IllegalArgumentException("port must be positive");
 		}
+	}
+
+
+	public boolean getMethodOnly() {
+		return getOption(METHODONLY, true);
+	}
+
+	public void setMethodOnly(final boolean methodonly) {
+		setOption(METHODONLY, methodonly);
 	}
 
 	/**

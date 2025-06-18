@@ -27,6 +27,20 @@ class MethodInstrumenter extends MethodProbesVisitor {
 
 	private final IProbeInserter probeInserter;
 
+	/*    GPT SUGGESTED CODE:
+	 KZCOMMENT I think we want to add the VisitCode override HERE
+
+		@Override
+	public void visitCode() {
+		super.visitCode();
+		// Insert a single probe per method
+		probeInserter.insertProbe(myMethodLevelProbeId);
+	}
+
+
+	*/
+
+
 	/**
 	 * Create a new instrumenter instance for the given method.
 	 *
@@ -43,6 +57,18 @@ class MethodInstrumenter extends MethodProbesVisitor {
 
 	// === IMethodProbesVisitor ===
 
+	/*
+		@Override
+		public void visitProbe(final int probeId) {
+			// No-op: disabling fine-grained probes
+		}
+
+		@Override
+		public void visitInsnWithProbe(final int opcode, final int probeId) {
+			mv.visitInsn(opcode); // just emit the instruction
+		}
+	 */
+
 	@Override
 	public void visitProbe(final int probeId) {
 		probeInserter.insertProbe(probeId);
@@ -53,6 +79,17 @@ class MethodInstrumenter extends MethodProbesVisitor {
 		probeInserter.insertProbe(probeId);
 		mv.visitInsn(opcode);
 	}
+
+	// KZCOMMENT I THINK THIS WILL BE IMPORTANT
+	//Determines which branch of GOTO activated at runtime.
+
+	/*   MIGHT WANT TO REPLACE WITH THIS -- from chatgpt. Stubs the function.
+		@Override
+		public void visitJumpInsnWithProbe(final int opcode, final Label label,
+										   final int probeId, final IFrame frame) {
+			mv.visitJumpInsn(opcode, label); // emit original jump without probe
+		}
+	*/
 
 	@Override
 	public void visitJumpInsnWithProbe(final int opcode, final Label label,
@@ -69,6 +106,7 @@ class MethodInstrumenter extends MethodProbesVisitor {
 			frame.accept(mv);
 		}
 	}
+
 
 	private int getInverted(final int opcode) {
 		switch (opcode) {
@@ -135,6 +173,8 @@ class MethodInstrumenter extends MethodProbesVisitor {
 		// 2. Insert probes:
 		insertIntermediateProbes(dflt, labels, frame);
 	}
+
+	// vvvvv Might have to stub all these too! vvvvv
 
 	private Label[] createIntermediates(final Label[] labels) {
 		final Label[] intermediates = new Label[labels.length];

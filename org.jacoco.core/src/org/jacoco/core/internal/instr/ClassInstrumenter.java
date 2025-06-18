@@ -27,6 +27,8 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 
 	private String className;
 
+	// private int probeCounter;
+
 	/**
 	 * Emits an instrumented version of this class to the given class visitor.
 	 *
@@ -41,6 +43,7 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 		super(cv);
 		this.probeArrayStrategy = probeArrayStrategy;
 	}
+
 
 	@Override
 	public void visit(final int version, final int access, final String name,
@@ -57,6 +60,8 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 		return super.visitField(access, name, desc, signature, value);
 	}
 
+
+	//KZCOMMENT THIS SEEMS VERY RELEVANT
 	@Override
 	public MethodProbesVisitor visitMethod(final int access, final String name,
 			final String desc, final String signature,
@@ -80,6 +85,7 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 	@Override
 	public void visitTotalProbeCount(final int count) {
 		probeArrayStrategy.addMembers(cv, count);
+		//probeCount += count;
 	}
 
 }

@@ -34,6 +34,7 @@ public class CoverageTransformer implements ClassFileTransformer {
 		AGENT_PREFIX = toVMName(name.substring(0, name.lastIndexOf('.')));
 	}
 
+
 	private final Instrumenter instrumenter;
 
 	private final IExceptionLogger logger;
@@ -49,6 +50,9 @@ public class CoverageTransformer implements ClassFileTransformer {
 	private final boolean inclBootstrapClasses;
 
 	private final boolean inclNoLocationClasses;
+
+
+	private final boolean methodonly;
 
 	/**
 	 * New transformer with the given delegates.
@@ -71,6 +75,8 @@ public class CoverageTransformer implements ClassFileTransformer {
 		classFileDumper = new ClassFileDumper(options.getClassDumpDir());
 		inclBootstrapClasses = options.getInclBootstrapClasses();
 		inclNoLocationClasses = options.getInclNoLocationClasses();
+
+		methodonly = options.getMethodOnly();
 	}
 
 	public byte[] transform(final ClassLoader loader, final String classname,

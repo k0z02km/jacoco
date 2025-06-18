@@ -28,6 +28,8 @@ import org.jacoco.core.runtime.AgentOptions;
  */
 public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 
+	@Parameter(property = "jacoco.methodonly")
+	Boolean methodonly;
 	/**
 	 * Name of the JaCoCo Agent artifact.
 	 */
@@ -36,6 +38,7 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 	 * Name of the property used in maven-osgi-test-plugin.
 	 */
 	static final String TYCHO_ARG_LINE = "tycho.testArgLine";
+
 	/**
 	 * Name of the property used in maven-surefire-plugin.
 	 */
@@ -185,6 +188,9 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 	AgentOptions createAgentOptions() {
 		final AgentOptions agentOptions = new AgentOptions();
 		agentOptions.setDestfile(getDestFile().getAbsolutePath());
+		if (methodonly != null) {
+			agentOptions.setMethodOnly(methodonly.booleanValue());
+		}
 		if (append != null) {
 			agentOptions.setAppend(append.booleanValue());
 		}
