@@ -46,7 +46,9 @@ public final class ProbeArrayStrategyFactory {
 		final String className = reader.getClassName();
 		final int version = InstrSupport.getMajorVersion(reader);
 
+		// System.out.println("createFor");
 		if (isInterfaceOrModule(reader)) {
+			// System.out.println("Getting in if statement");
 			final ProbeCounter counter = getProbeCounter(reader);
 			if (counter.getCount() == 0) {
 				return new NoneProbeArrayStrategy();
@@ -64,9 +66,12 @@ public final class ProbeArrayStrategyFactory {
 			}
 		} else {
 			if (version >= Opcodes.V11) {
+				// System.out.println("CondField PROBEARRAYSTRATEGY!!!");
+
 				return new CondyProbeArrayStrategy(className, false, classId,
 						accessorGenerator);
 			}
+			// System.out.println("ClassField PROBEARRAYSTRATEGY!!!");
 			return new ClassFieldProbeArrayStrategy(className, classId,
 					InstrSupport.needsFrames(version), accessorGenerator);
 		}
@@ -78,6 +83,7 @@ public final class ProbeArrayStrategyFactory {
 	}
 
 	private static ProbeCounter getProbeCounter(final ClassReader reader) {
+		// System.out.println("Getting in getProbeCounter");
 		final ProbeCounter counter = new ProbeCounter();
 		reader.accept(new ClassProbesAdapter(counter, false), 0);
 		return counter;

@@ -34,8 +34,9 @@ import java.util.regex.Pattern;
  */
 public final class AgentOptions {
 
-	/** KZ ADDITION
-	 *  Specifies whether we want Jacoco to probe by method only or include line/branch
+	/**
+	 * KZ ADDITION Specifies whether we want Jacoco to probe by method only or
+	 * include line/branch
 	 */
 	public static final String METHODONLY = "methodonly";
 
@@ -263,7 +264,6 @@ public final class AgentOptions {
 			throw new IllegalArgumentException("port must be positive");
 		}
 	}
-
 
 	public boolean getMethodOnly() {
 		return getOption(METHODONLY, true);

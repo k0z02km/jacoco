@@ -11,15 +11,11 @@
  *
  *******************************************************************************/
 
-package org.jacoco.core.internal.instr;
+package org.jacoco.core.internal.flow;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.objectweb.asm.commons.AnalyzerAdapter;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface JacocoMethodOnlyInstrumented {
+public interface MethodProbeAdapter {
 
+	void setAnalyzer(final AnalyzerAdapter analyzer);
 }

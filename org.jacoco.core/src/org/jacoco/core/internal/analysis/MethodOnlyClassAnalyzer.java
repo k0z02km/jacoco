@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *    Marc R. Hoffmann - initial API and implementation
+ *    Katherine Zhang - Adding MethodOnlyCOverage option
  *
  *******************************************************************************/
 package org.jacoco.core.internal.analysis;
@@ -35,7 +35,7 @@ import org.objectweb.asm.tree.MethodNode;
 /**
  * Analyzes the structure of a class.
  */
-public class ClassAnalyzer extends ClassProbesVisitor
+public class MethodOnlyClassAnalyzer extends ClassProbesVisitor
 		implements IFilterContext {
 
 	private final ClassCoverageImpl coverage;
@@ -52,6 +52,8 @@ public class ClassAnalyzer extends ClassProbesVisitor
 
 	private final IFilter filter;
 
+	private int counter;
+
 	/**
 	 * Creates a new analyzer that builds coverage data for a class.
 	 *
@@ -62,12 +64,17 @@ public class ClassAnalyzer extends ClassProbesVisitor
 	 * @param stringPool
 	 *            shared pool to minimize the number of {@link String} instances
 	 */
-	public ClassAnalyzer(final ClassCoverageImpl coverage,
+	public MethodOnlyClassAnalyzer(final ClassCoverageImpl coverage,
 			final boolean[] probes, final StringPool stringPool) {
 		this.coverage = coverage;
 		this.probes = probes;
 		this.stringPool = stringPool;
 		this.filter = Filters.all();
+		counter = 0;
+	}
+
+	public void printcoverage() {
+		this.coverage.print();
 	}
 
 	@Override
@@ -102,19 +109,22 @@ public class ClassAnalyzer extends ClassProbesVisitor
 			final String desc, final String signature,
 			final String[] exceptions) {
 
-		// System.out.println("GETTING HERE");
+		System.out.println("GETTING HERE");
 
 		InstrSupport.assertNotInstrumented(name, coverage.getName());
 
 		final InstructionsBuilder builder = new InstructionsBuilder(probes);
 
-		// System.out.println("GETTING HERE2");
+		System.out.println("GETTING HERE2");
 
 		return new MethodAnalyzer(builder) {
 
 			@Override
 			public void accept(final MethodNode methodNode,
 					final MethodVisitor methodVisitor) {
+
+				System.out.println("GETTING INTO METHODANALYZER ACCEPT");
+
 				super.accept(methodNode, methodVisitor);
 				addMethodCoverage(stringPool.get(name), stringPool.get(desc),
 						stringPool.get(signature), builder, methodNode);
@@ -126,22 +136,17 @@ public class ClassAnalyzer extends ClassProbesVisitor
 			final String signature, final InstructionsBuilder icc,
 			final MethodNode methodNode) {
 
-		final Map<AbstractInsnNode, Instruction> instructions = icc
-				.getInstructions();
-		calculateFragments(instructions);
-
-		final MethodCoverageCalculator mcc = new MethodCoverageCalculator(
-				instructions);
-		filter.filter(methodNode, this, mcc);
-
 		final MethodCoverageImpl mc = new MethodCoverageImpl(name, desc,
 				signature);
-		mcc.calculate(mc);
 
-		if (mc.containsCode()) {
-			// Only consider methods that actually contain code
-			coverage.addMethod(mc);
-		}
+		if (probes != null)
+			mc.incrementMethodCounter(probes[counter]);
+
+		System.out.println("Getting here 3");
+		// Only consider methods that actually contain code
+		coverage.addMethod(mc);
+
+		counter++;
 
 	}
 

@@ -44,7 +44,6 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 		this.probeArrayStrategy = probeArrayStrategy;
 	}
 
-
 	@Override
 	public void visit(final int version, final int access, final String name,
 			final String signature, final String superName,
@@ -60,8 +59,7 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 		return super.visitField(access, name, desc, signature, value);
 	}
 
-
-	//KZCOMMENT THIS SEEMS VERY RELEVANT
+	// KZCOMMENT THIS SEEMS VERY RELEVANT
 	@Override
 	public MethodProbesVisitor visitMethod(final int access, final String name,
 			final String desc, final String signature,
@@ -85,7 +83,7 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 	@Override
 	public void visitTotalProbeCount(final int count) {
 		probeArrayStrategy.addMembers(cv, count);
-		//probeCount += count;
+		// probeCount += count;
 	}
 
 }

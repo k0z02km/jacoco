@@ -34,7 +34,6 @@ public class CoverageTransformer implements ClassFileTransformer {
 		AGENT_PREFIX = toVMName(name.substring(0, name.lastIndexOf('.')));
 	}
 
-
 	private final Instrumenter instrumenter;
 
 	private final IExceptionLogger logger;
@@ -51,9 +50,6 @@ public class CoverageTransformer implements ClassFileTransformer {
 
 	private final boolean inclNoLocationClasses;
 
-
-	private final boolean methodonly;
-
 	/**
 	 * New transformer with the given delegates.
 	 *
@@ -66,7 +62,10 @@ public class CoverageTransformer implements ClassFileTransformer {
 	 */
 	public CoverageTransformer(final IRuntime runtime,
 			final AgentOptions options, final IExceptionLogger logger) {
-		this.instrumenter = new Instrumenter(runtime);
+
+		// KZCOMMENT: CHANGED TO TAKE IN METHODCOVERAGEONLY
+		this.instrumenter = new Instrumenter(runtime, options.getMethodOnly());
+		System.out.println(options.getMethodOnly());
 		this.logger = logger;
 		// Class names will be reported in VM notation:
 		includes = new WildcardMatcher(toVMName(options.getIncludes()));
@@ -76,7 +75,6 @@ public class CoverageTransformer implements ClassFileTransformer {
 		inclBootstrapClasses = options.getInclBootstrapClasses();
 		inclNoLocationClasses = options.getInclNoLocationClasses();
 
-		methodonly = options.getMethodOnly();
 	}
 
 	public byte[] transform(final ClassLoader loader, final String classname,
@@ -97,6 +95,7 @@ public class CoverageTransformer implements ClassFileTransformer {
 			classFileDumper.dump(classname, classfileBuffer);
 			return instrumenter.instrument(classfileBuffer, classname);
 		} catch (final Exception ex) {
+			System.out.println("ERROR HERE");
 			final IllegalClassFormatException wrapper = new IllegalClassFormatException(
 					ex.getMessage());
 			wrapper.initCause(ex);

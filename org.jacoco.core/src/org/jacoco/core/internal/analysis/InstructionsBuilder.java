@@ -147,7 +147,9 @@ class InstructionsBuilder {
 	 */
 	void addProbe(final int probeId, final int branch) {
 		final boolean executed = probes != null && probes[probeId];
-		currentInsn.addBranch(executed, branch);
+		if (currentInsn != null) {
+			currentInsn.addBranch(executed, branch);
+		}
 	}
 
 	/**

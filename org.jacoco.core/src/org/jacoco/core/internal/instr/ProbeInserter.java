@@ -79,7 +79,6 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 	}
 
 	public void insertProbe(final int id) {
-
 		// For a probe we set the corresponding position in the boolean[] array
 		// to true.
 
@@ -99,18 +98,16 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 		// Stack[0]: [Z
 
 		mv.visitInsn(Opcodes.BASTORE);
+		System.out.println(mv.getClass().getName() + " PROBE INSERTED");
 	}
 
 	/*
-		@Override
-		public void visitCode() {
-			mv.visitLabel(beginLabel);
-			accessorStackSize = arrayStrategy.storeInstance(mv, clinit, variable);
-
-			probeInserter.insertProbe(methodEntryProbeId);
-
-			mv.visitCode();
-		}
+	 * @Override public void visitCode() { mv.visitLabel(beginLabel);
+	 * accessorStackSize = arrayStrategy.storeInstance(mv, clinit, variable);
+	 *
+	 * probeInserter.insertProbe(methodEntryProbeId);
+	 *
+	 * mv.visitCode(); }
 	 */
 
 	@Override

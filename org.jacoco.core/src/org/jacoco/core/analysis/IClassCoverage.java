@@ -83,4 +83,5 @@ public interface IClassCoverage extends ISourceNode {
 	 */
 	Collection<IMethodCoverage> getMethods();
 
+	void print();
 }

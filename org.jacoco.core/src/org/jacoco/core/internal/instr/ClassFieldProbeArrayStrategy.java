@@ -62,6 +62,7 @@ class ClassFieldProbeArrayStrategy implements IProbeArrayStrategy {
 	public void addMembers(final ClassVisitor cv, final int probeCount) {
 		createDataField(cv);
 		createInitMethod(cv, probeCount);
+		// System.out.println("Size " + probeCount + " array created.");
 	}
 
 	private void createDataField(final ClassVisitor cv) {

@@ -48,6 +48,8 @@ public class Instrumenter {
 
 	private final SignatureRemover signatureRemover;
 
+	private final boolean methodCoverageOnly;
+
 	/**
 	 * Creates a new instance based on the given runtime.
 	 *
@@ -57,6 +59,14 @@ public class Instrumenter {
 	public Instrumenter(final IExecutionDataAccessorGenerator runtime) {
 		this.accessorGenerator = runtime;
 		this.signatureRemover = new SignatureRemover();
+		this.methodCoverageOnly = false;
+	}
+
+	public Instrumenter(final IExecutionDataAccessorGenerator runtime,
+			final boolean methodonly) {
+		this.accessorGenerator = runtime;
+		this.signatureRemover = new SignatureRemover();
+		this.methodCoverageOnly = methodonly;
 	}
 
 	/**
@@ -82,13 +92,24 @@ public class Instrumenter {
 				throw new IllegalStateException();
 			}
 		};
+		// System.out.println("Dry run1");
 		final IProbeArrayStrategy strategy = ProbeArrayStrategyFactory
 				.createFor(classId, reader, accessorGenerator);
 		final int version = InstrSupport.getMajorVersion(reader);
-		final ClassVisitor visitor = new ClassProbesAdapter(
-				new ClassInstrumenter(strategy, writer),
-				InstrSupport.needsFrames(version));
-		reader.accept(visitor, ClassReader.EXPAND_FRAMES);
+
+		// KZCOMMENT MIGHT NEED TO CHANGE TO TAKE IN METHODONLY OPTION
+		if (this.methodCoverageOnly) {
+			final ClassVisitor visitor = new ClassProbesAdapter(
+					new ClassInstrumenter(strategy, writer),
+					InstrSupport.needsFrames(version), this.methodCoverageOnly);
+			reader.accept(visitor, ClassReader.EXPAND_FRAMES);
+		} else {
+			final ClassVisitor visitor = new ClassProbesAdapter(
+					new ClassInstrumenter(strategy, writer),
+					InstrSupport.needsFrames(version));
+			reader.accept(visitor, ClassReader.EXPAND_FRAMES);
+		}
+		// System.out.println("INSTRUMENT FINISHED");
 		return writer.toByteArray();
 	}
 

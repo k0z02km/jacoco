@@ -25,9 +25,12 @@ class ProbeCounter extends ClassProbesVisitor {
 	private boolean methods;
 
 	ProbeCounter() {
+		// System.out.println("PROBE COUNTER INITIALIZED");
 		count = 0;
 		methods = false;
 	}
+
+	// KZCOMMENT: MIGHT WANT TO OVERRIDE VISITMETHOD HERE
 
 	@Override
 	public MethodProbesVisitor visitMethod(final int access, final String name,
@@ -43,6 +46,7 @@ class ProbeCounter extends ClassProbesVisitor {
 	@Override
 	public void visitTotalProbeCount(final int count) {
 		this.count = count;
+		// System.out.println("probecounter count is " + count);
 	}
 
 	int getCount() {

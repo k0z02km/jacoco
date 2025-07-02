@@ -66,6 +66,19 @@ public class MethodCoverageImpl extends SourceNodeImpl
 		this.complexityCounter = this.complexityCounter.increment(base);
 	}
 
+	public void incrementMethodCounter(boolean covered) {
+		final ICounter base = covered ? CounterImpl.COUNTER_0_1
+				: CounterImpl.COUNTER_1_0;
+		this.methodCounter = this.methodCounter.increment(base);
+		this.complexityCounter = this.complexityCounter.increment(base);
+	}
+
+	@Override
+	public void print() {
+		System.out.println(
+				this.methodCounter.missed + ", " + this.methodCounter.covered);
+	}
+
 	@Override
 	public boolean applyFragment(final SourceNodeImpl fragment) {
 		final boolean applied = super.applyFragment(fragment);

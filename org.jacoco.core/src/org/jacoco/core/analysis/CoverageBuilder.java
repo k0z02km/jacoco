@@ -102,6 +102,12 @@ public class CoverageBuilder implements ICoverageVisitor {
 	}
 
 	private void build() {
+
+		// System.out.println("COVERAGE BUILDER CLASS COVERAGE OUTPUT");
+		for (final IClassCoverage c : classes.values()) {
+			c.print();
+		}
+
 		if (sourcefiles != null) {
 			return;
 		}

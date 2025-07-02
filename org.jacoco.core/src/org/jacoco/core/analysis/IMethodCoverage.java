@@ -32,4 +32,5 @@ public interface IMethodCoverage extends ISourceNode {
 	 */
 	String getSignature();
 
+	void print();
 }

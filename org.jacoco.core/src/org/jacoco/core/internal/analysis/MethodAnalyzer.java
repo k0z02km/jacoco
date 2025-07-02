@@ -43,7 +43,13 @@ public class MethodAnalyzer extends MethodProbesVisitor {
 	@Override
 	public void accept(final MethodNode methodNode,
 			final MethodVisitor methodVisitor) {
+
+		// System.out.println("case acc_synthetic");
+
 		methodVisitor.visitCode();
+
+		// KSCOMMENT It's going to visitCode first which calls visitProbe -->
+		// addprobe, but no instruction is set yet so it errors.
 		for (final TryCatchBlockNode n : methodNode.tryCatchBlocks) {
 			n.accept(methodVisitor);
 		}
@@ -51,6 +57,7 @@ public class MethodAnalyzer extends MethodProbesVisitor {
 			currentNode = i;
 			i.accept(methodVisitor);
 		}
+
 		methodVisitor.visitEnd();
 	}
 

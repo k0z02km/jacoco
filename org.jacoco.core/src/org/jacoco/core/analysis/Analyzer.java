@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
@@ -29,6 +30,7 @@ import org.jacoco.core.internal.InputStreams;
 import org.jacoco.core.internal.Pack200Streams;
 import org.jacoco.core.internal.analysis.ClassAnalyzer;
 import org.jacoco.core.internal.analysis.ClassCoverageImpl;
+import org.jacoco.core.internal.analysis.MethodOnlyClassAnalyzer;
 import org.jacoco.core.internal.analysis.StringPool;
 import org.jacoco.core.internal.data.CRC64;
 import org.jacoco.core.internal.flow.ClassProbesAdapter;
@@ -53,6 +55,8 @@ public class Analyzer {
 
 	private final StringPool stringPool;
 
+	private boolean MethodCoverageOnly;
+
 	/**
 	 * Creates a new analyzer reporting to the given output.
 	 *
@@ -67,6 +71,8 @@ public class Analyzer {
 		this.executionData = executionData;
 		this.coverageVisitor = coverageVisitor;
 		this.stringPool = new StringPool();
+		this.MethodCoverageOnly = true;
+
 	}
 
 	/**
@@ -83,38 +89,73 @@ public class Analyzer {
 		final ExecutionData data = executionData.get(classid);
 		final boolean[] probes;
 		final boolean noMatch;
+
+		// System.out.println("Looking at class:" + className);
 		if (data == null) {
 			probes = null;
 			noMatch = executionData.contains(className);
+			// System.out.println("PROBE ARRAY IS NULL");
 		} else {
 			probes = data.getProbes();
 			noMatch = false;
+
+			// System.out.println("PROBES SIZE IS: " + probes.length);
+			// System.out.println("PROBE ARRAY IS:");
+			// System.out.println(Arrays.toString(probes));
 		}
 		final ClassCoverageImpl coverage = new ClassCoverageImpl(className,
 				classid, noMatch);
-		final ClassAnalyzer analyzer = new ClassAnalyzer(coverage, probes,
-				stringPool) {
-			@Override
-			public void visitEnd() {
-				super.visitEnd();
-				coverageVisitor.visitCoverage(coverage);
-			}
-		};
-		return new ClassProbesAdapter(analyzer, false);
+
+		if (MethodCoverageOnly) {
+			final MethodOnlyClassAnalyzer analyzer = new MethodOnlyClassAnalyzer(
+					coverage, probes, stringPool) {
+				@Override
+				public void visitEnd() {
+					super.visitEnd();
+					// System.out.println("GETTING HERE (!!!)");
+					// System.out.println("COVERAGE INFO HERE:");
+					printcoverage();
+					coverageVisitor.visitCoverage(coverage);
+				}
+			};
+
+			return new ClassProbesAdapter(analyzer, false, MethodCoverageOnly);
+
+		} else {
+
+			final ClassAnalyzer analyzer = new ClassAnalyzer(coverage, probes,
+					stringPool) {
+				@Override
+				public void visitEnd() {
+					System.out.println("GETTING HERE (!!!)");
+					super.visitEnd();
+					coverageVisitor.visitCoverage(coverage);
+				}
+			};
+
+			return new ClassProbesAdapter(analyzer, false, false);
+		}
 	}
 
 	private void analyzeClass(final byte[] source) {
+		System.out.println("BEGIN ANALYZING CLASS");
 		final long classId = CRC64.classId(source);
 		final ClassReader reader = InstrSupport.classReaderFor(source);
 		if ((reader.getAccess() & Opcodes.ACC_MODULE) != 0) {
+			System.out.println("case acc_module");
 			return;
 		}
 		if ((reader.getAccess() & Opcodes.ACC_SYNTHETIC) != 0) {
+			System.out.println("case acc_synthetic");
 			return;
 		}
 		final ClassVisitor visitor = createAnalyzingVisitor(classId,
 				reader.getClassName());
+
+		System.out.println("CreateAnalyzingVisitor complete");
+
 		reader.accept(visitor, 0);
+
 	}
 
 	/**

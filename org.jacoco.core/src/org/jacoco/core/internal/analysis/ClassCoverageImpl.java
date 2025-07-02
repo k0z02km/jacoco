@@ -65,10 +65,25 @@ public class ClassCoverageImpl extends SourceNodeImpl
 		increment(method);
 		// Class is considered as covered when at least one method is covered:
 		if (methodCounter.getCoveredCount() > 0) {
+			// System.out.println("Class COVERED");
 			this.classCounter = CounterImpl.COUNTER_0_1;
 		} else {
+			// System.out.println("Class NOT COVERED");
 			this.classCounter = CounterImpl.COUNTER_1_0;
 		}
+	}
+
+	public void print() {
+		/*
+		 * System.out.println("Printing for: " + sourceFileName + " " +
+		 * superName + " " + signature); System.out.println("Class counter: " +
+		 * this.classCounter.missed + ", " + this.classCounter.covered);
+		 *
+		 * System.out.println("Method counter: " + this.methodCounter.missed +
+		 * ", " + this.methodCounter.covered);
+		 *
+		 * for (final IMethodCoverage method : methods) { method.print(); } (
+		 */
 	}
 
 	/**
